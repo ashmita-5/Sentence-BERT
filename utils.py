@@ -9,7 +9,6 @@ import sys
 import re
 
 BERTData = pickle.load(open('./app/models/bert_model.pkl', 'rb'))
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 n_layers = BERTData['n_layers']
 n_heads = BERTData['n_heads']
@@ -23,33 +22,6 @@ word2id = BERTData['word2id']
 batch_size = BERTData['batch_size']
 max_mask = BERTData['max_mask']
 max_len = BERTData['max_len']
-
-class SimpleTokenizer:
-    def __init__(self, word2id, max_len):
-        self.word2id = word2id
-        self.word2id.setdefault('[UNK]', len(self.word2id))  # Add [UNK] token if not present
-        self.vocab_size = len(self.word2id)
-        self.nlp = spacy.load("en_core_web_sm")
-        self.max_len = max_len  # Define and initialize max_len
-
-    def tokenize(self, texts):
-        output = {'input_ids': [], 'attention_mask': []}
-        for text in texts:
-            doc = self.nlp(text)
-            sentences = list(doc.sents)
-            text = [x.text.lower() for x in sentences]
-            text = [re.sub("[.,!?\\-]", '', x) for x in text]
-            input_ids = []
-            for sentence in text:
-                ids = [self.word2id.get(word, self.word2id['[UNK]']) for word in sentence.split()]
-                input_ids.extend(ids)
-            n_pad = self.max_len - len(input_ids)
-            input_ids.extend([0] * n_pad)
-            att_mask = [1 if idx != 0 else 0 for idx in input_ids]  # Create attention mask
-            output['input_ids'].append(torch.tensor(input_ids))  # Convert to tensor
-            output['attention_mask'].append(torch.tensor(att_mask))  # Convert to tensor
-        return output
-
 
 class Embedding(nn.Module):
     def __init__(self):
@@ -133,7 +105,7 @@ class PoswiseFeedForwardNet(nn.Module):
 class BERT(nn.Module):
     def __init__(self):
         super(BERT, self).__init__()
-        self.embedding = Embedding()
+        self.embedding = Embedding().to(device)
         self.layers = nn.ModuleList([EncoderLayer() for _ in range(n_layers)])
         self.fc = nn.Linear(d_model, d_model)
         self.activ = nn.Tanh()
@@ -147,7 +119,7 @@ class BERT(nn.Module):
         self.decoder.weight = embed_weight
         self.decoder_bias = nn.Parameter(torch.zeros(n_vocab))
 
-    def forward(self, input_ids, segment_ids, masked_pos):
+    def forward(self, input_ids, segment_ids, masked_pos, attention_mask=None):        
         output = self.embedding(input_ids, segment_ids)
         enc_self_attn_mask = get_attn_pad_mask(input_ids, input_ids)
         for layer in self.layers:
