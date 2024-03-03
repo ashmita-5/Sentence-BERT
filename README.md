@@ -34,9 +34,7 @@ The datasets: SNLI or MNLI from Hugging Face is trained using fine-tuning a pret
 
 The performance of our BERT model might not be great because we trained it on a relatively small amount of data (1 million sentences), and we only used 6 layers of encoder. BERT typically has 12 layers. Additionally, when fine-tuning S-BERT (a variant of BERT) on our data, we had even less training data and trained for only one epoch. 
 
-In our case, we used 6 layers of encoder, 8 attention heads, and an embedding size of 768. These selection is done based on the size of our training data.
-
-To improve performance, we might need more training data and could consider using more layers in the BERT model. Having larger datasets and deeper models could help improve the performance of our model.
+In our case, we used 6 layers of encoder, 8 attention heads, and an embedding size of 768. These selection is done based on the size of our training data. To improve performance, we might need more training data and could consider using more layers in the BERT model. Having larger datasets and deeper models could help improve the performance of our model.
 
 The hyperparameters chosen for training our BERT model was: Training data, Embedding Size, Number of epochs, Vocab size.
 
