@@ -43,3 +43,8 @@ The hyperparameters chosen for training our BERT model was: Training data, Embed
 During implementation, I faced challenges in tokenizing the dataset for the scratch model and pre-trained model as we need to combine them and it was quite challenging for me. Also, due to the limited amount of training data, there was impact on the performance of the model.
 
 To improve the model, we could consider collecting more training data  We can also experiment with fine-tuning hyperparameters like learning rate could further enhance the model's performance.
+
+### Task 4. Text similarity - Web Application Development
+
+<img width="1251" alt="Screenshot 2024-03-04 at 23 12 37" src="https://github.com/ashmita-5/NLP-Assignment-5---BERT/assets/32629216/7db09a5a-9ab0-4885-9bf8-d3d36b827322">
+
