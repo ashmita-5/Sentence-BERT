@@ -28,21 +28,17 @@
         <h1 class="text-center mb-5">Text Similarity</h1>
         <form action="/search" method="post">
             <div class="form-group">
-                <label for="query">Enter Query:</label>
-                <input type="text" class="form-control" id="query" name="query">
+                <label for="sentence1">Enter Sentence 1:</label>
+                <input type="text" class="form-control" id="sentence1" name="sentence1">
             </div>
             <div class="form-group">
-                <label for="text">Enter Text:</label>
-                <textarea class="form-control" id="text" name="text" rows="4"></textarea>
+                <label for="sentence2">Enter Sentence 2:</label>
+                <input type="text" class="form-control" id="sentence2" name="sentence2">
             </div>
-            <button type="submit" class="btn btn-primary">Search</button>
+            <button type="submit" class="btn btn-primary">Calculate Similarity</button>
         </form>
-        {% if query and text %}
+        {% if similarity %}
             <div class="result mt-5">
-                <h2>Query:</h2>
-                <p>{{ query }}</p>
-                <h2>Text:</h2>
-                <p>{{ text }}</p>
                 <h2>Cosine Similarity:</h2>
                 <p>{{ similarity }}</p>
             </div>
