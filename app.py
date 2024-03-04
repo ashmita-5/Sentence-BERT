@@ -1,22 +1,18 @@
 from flask import Flask, render_template, request
-from utils import BERT, SimpleTokenizer, calculate_similarity
+from utils import BERT,SimpleTokenizer,calculate_similarity
 import torch
+import pickle
 
 app = Flask(__name__)
-
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # Load your custom-trained Sentence Transformer model
-model_path = "./app/models/bert_model.pkl"
-bert_model = BERT(model_path)
+model_path = "./app/models/s_bertmodel.pt"
+bert_model = BERT()
 
-# Function to calculate cosine similarity
-def calculate_similarity(query, text):
-    # Encode query and text to get embeddings
-    query_embedding = bert_model.encode(query, convert_to_tensor=True)
-    text_embedding = bert_model.encode(text, convert_to_tensor=True)
+BERTData = pickle.load(open('./app/models/bert_model.pkl', 'rb'))
+word2id = BERTData['word2id']
+tokenizer = SimpleTokenizer(word2id)
 
-    # Calculate cosine similarity
-    similarity_score = torch.nn.functional.cosine_similarity(query_embedding, text_embedding).item()
-    return similarity_score
 
 @app.route('/')
 def index():
@@ -24,12 +20,12 @@ def index():
 
 @app.route('/search', methods=['POST'])
 def search():
-    query = request.form['query']
-    text = request.form['text']
+    sentence1 = request.form.get('sentence1')
+    sentence2 = request.form.get('sentence2')
 
-    similarity_score = calculate_similarity(query, text)
+    similarity_score = calculate_similarity(bert_model, tokenizer, sentence1, sentence2, device)
 
-    return render_template('index.html', query=query, text=text, similarity=similarity_score)
+    return render_template('index.html', similarity=similarity_score)
 
 if __name__ == '__main__':
     app.run(debug=True)
