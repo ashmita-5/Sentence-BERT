@@ -1,8 +1,4 @@
-# NLP-Assignment-5---BERT
-
-## Student Info
-
-Ashmita Phuyal(124454)
+# Sentence-BERT
 
 ### Task 1: BERT from Scratch with Sentence Transformer <br>
 
